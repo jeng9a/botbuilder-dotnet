@@ -22,7 +22,7 @@ namespace Microsoft.Bot.Builder.Ai.Translation
         private readonly Translator _translator;
         private readonly CustomDictionary _userCustomDictonaries;
         private readonly Dictionary<string, List<string>> _patterns;
-        private readonly IStatePropertyAccessor<string> _languageStateProperty;
+        private readonly BotStatePropertyAccessor<string> _languageStateProperty;
         private readonly bool _toUserLanguage;
         private List<IPostProcessor> attachedPostProcessors;
 
@@ -89,7 +89,7 @@ namespace Microsoft.Bot.Builder.Ai.Translation
         /// <remarks>Each pattern the <paramref name="patterns"/> describes an entity that should not be translated.
         /// For example, in French <c>je m’appelle ([a-z]+)</c>, which will avoid translation of anything coming after je m’appelle.</remarks>
         /// <param name="httpClient">An alternate HTTP client to use.</param>
-        public TranslationMiddleware(string[] nativeLanguages, string translatorKey, Dictionary<string, List<string>> patterns, CustomDictionary userCustomDictonaries, IStatePropertyAccessor<string> languageStateProperty, bool toUserLanguage = false, HttpClient httpClient = null)
+        public TranslationMiddleware(string[] nativeLanguages, string translatorKey, Dictionary<string, List<string>> patterns, CustomDictionary userCustomDictonaries, BotStatePropertyAccessor<string> languageStateProperty, bool toUserLanguage = false, HttpClient httpClient = null)
             : this(nativeLanguages, translatorKey, patterns, userCustomDictonaries, toUserLanguage, httpClient)
         {
             _languageStateProperty = languageStateProperty ?? throw new ArgumentNullException(nameof(languageStateProperty));

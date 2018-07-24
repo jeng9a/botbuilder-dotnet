@@ -201,7 +201,7 @@ namespace Microsoft.Bot.Builder.Ai.Translation.Tests
             return File.OpenRead(path);
         }
 
-        protected async Task<bool> HandleChangeLanguageRequest(ITurnContext context, IStatePropertyAccessor<string> languageProperty)
+        protected async Task<bool> HandleChangeLanguageRequest(ITurnContext context, BotStatePropertyAccessor<string> languageProperty)
         {
             var changeLang = false; //logic implemented by developper to make a signal for language changing 
             //use a specific message from user to change language 

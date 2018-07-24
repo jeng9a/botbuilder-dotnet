@@ -35,7 +35,7 @@ namespace Microsoft.Bot.Builder
         /// <param name="name">name of the property.</param>
         /// <param name="defaultValueFactory">default value.</param>
         /// <returns>returns an IPropertyAccessor</returns>
-        public IStatePropertyAccessor<T> CreateProperty<T>(string name, Func<T> defaultValueFactory = null)
+        public BotStatePropertyAccessor<T> CreateProperty<T>(string name, Func<T> defaultValueFactory = null)
         {
             if (name == null)
             {
@@ -153,8 +153,6 @@ namespace Microsoft.Bot.Builder
             return Task.CompletedTask;
         }
 
-        protected abstract string GetStorageKey(ITurnContext context);
-
         /// <summary>
         /// gives IPropertyAccessor ability to get property Value from container.
         /// </summary>
@@ -162,7 +160,7 @@ namespace Microsoft.Bot.Builder
         /// <param name="propertyName">name of the property.</param>
         /// <param name="cancellationToken">cancellationToken.</param>
         /// <returns>T</returns>
-        protected Task<T> GetPropertyValueAsync<T>(ITurnContext turnContext, string propertyName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<T> GetPropertyValueAsync<T>(ITurnContext turnContext, string propertyName, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (turnContext == null)
             {
@@ -188,7 +186,7 @@ namespace Microsoft.Bot.Builder
         /// <param name="propertyName">name of the property.</param>
         /// <param name="cancellationToken">cancellationToken.</param>
         /// <returns>Task</returns>
-        protected Task DeletePropertyValueAsync(ITurnContext turnContext, string propertyName, CancellationToken cancellationToken = default(CancellationToken))
+        public Task DeletePropertyValueAsync(ITurnContext turnContext, string propertyName, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (turnContext == null)
             {
@@ -213,7 +211,7 @@ namespace Microsoft.Bot.Builder
         /// <param name="value">value of the property.</param>
         /// <param name="cancellationToken">cancellationToken.</param>
         /// <returns>Task</returns>
-        protected Task SetPropertyValueAsync(ITurnContext turnContext, string propertyName, object value, CancellationToken cancellationToken = default(CancellationToken))
+        public Task SetPropertyValueAsync(ITurnContext turnContext, string propertyName, object value, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (turnContext == null)
             {
@@ -229,6 +227,8 @@ namespace Microsoft.Bot.Builder
             cachedState.State[propertyName] = value;
             return Task.CompletedTask;
         }
+
+        protected abstract string GetStorageKey(ITurnContext context);
 
         /// <summary>
         /// Internal cached bot state.
@@ -253,81 +253,6 @@ namespace Microsoft.Bot.Builder
             private string ComputeHash(object obj)
             {
                 return JsonConvert.SerializeObject(obj);
-            }
-        }
-
-        /// <summary>
-        /// Implements IPropertyAccessor for an IPropertyContainer.
-        /// </summary>
-        /// <typeparam name="T">type of value the propertyAccessor accesses.</typeparam>
-        private class BotStatePropertyAccessor<T> : IStatePropertyAccessor<T>
-        {
-            private BotState _botState;
-            private Func<T> _defaultValueFactory;
-
-            public BotStatePropertyAccessor(BotState botState, string name, Func<T> defaultValueFactory)
-            {
-                _botState = botState;
-                Name = name;
-                if (defaultValueFactory == null)
-                {
-                    _defaultValueFactory = () => default(T);
-                }
-                else
-                {
-                    _defaultValueFactory = defaultValueFactory;
-                }
-            }
-
-            /// <summary>
-            /// Gets name of the property.
-            /// </summary>
-            /// <value>
-            /// name of the property.
-            /// </value>
-            public string Name { get; private set; }
-
-            /// <summary>
-            /// Delete the property.
-            /// </summary>
-            /// <param name="turnContext">turn context</param>
-            /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-            public Task DeleteAsync(ITurnContext turnContext)
-            {
-                return _botState.DeletePropertyValueAsync(turnContext, Name);
-            }
-
-            /// <summary>
-            /// Get the property value.
-            /// </summary>
-            /// <param name="turnContext">turn context</param>
-            /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-            public async Task<T> GetAsync(ITurnContext turnContext)
-            {
-                try
-                {
-                    return await _botState.GetPropertyValueAsync<T>(turnContext, Name).ConfigureAwait(false);
-                }
-                catch (KeyNotFoundException)
-                {
-                    // ask for default value from factory
-                    var result = _defaultValueFactory();
-
-                    // save default value for any further calls
-                    await SetAsync(turnContext, result).ConfigureAwait(false);
-                    return result;
-                }
-            }
-
-            /// <summary>
-            /// Set the property value.
-            /// </summary>
-            /// <param name="turnContext">turn context.</param>
-            /// <param name="value">value.</param>
-            /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-            public Task SetAsync(ITurnContext turnContext, T value)
-            {
-                return _botState.SetPropertyValueAsync(turnContext, Name, value);
             }
         }
     }
