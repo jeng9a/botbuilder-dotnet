@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 namespace Microsoft.Bot.Builder
 {
     /// <summary>
-    /// Reads and writes state for your bot to storage.
+    /// Defines middleware for managing bot state.
     /// </summary>
     public abstract class BotState : IMiddleware
     {
@@ -21,7 +21,10 @@ namespace Microsoft.Bot.Builder
         /// Initializes a new instance of the <see cref="BotState"/> class.
         /// </summary>
         /// <param name="storage">The storage provider to use.</param>
-        /// <param name="contextServiceKey">the key for caching on the context services dictionary.</param>
+        /// <param name="contextServiceKey">The key to use for reading from and writing to
+        /// storage and for getting and setting the cached state.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="storage"/> or
+        /// <paramref name="contextServiceKey"/> is null.</exception>
         public BotState(IStorage storage, string contextServiceKey)
         {
             _storage = storage ?? throw new ArgumentNullException(nameof(storage));
@@ -29,11 +32,12 @@ namespace Microsoft.Bot.Builder
         }
 
         /// <summary>
-        /// Create a property definition and register it with this BotState.
+        /// Creates a new property accessor on this <see cref="BotState"/>.
         /// </summary>
-        /// <typeparam name="T">type of property.</typeparam>
-        /// <param name="name">name of the property.</param>
-        /// <returns>returns an IPropertyAccessor</returns>
+        /// <typeparam name="T">The type of the property.</typeparam>
+        /// <param name="name">The name to use to access the property.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is null.</exception>
+        /// <returns>The new property accessor.</returns>
         public IStatePropertyAccessor<T> CreateProperty<T>(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -50,9 +54,11 @@ namespace Microsoft.Bot.Builder
         /// <param name="context">The context object for this turn.</param>
         /// <param name="next">The delegate to call to continue the bot middleware pipeline.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="context"/> or
+        /// <paramref name="next"/> is null.</exception>
         /// <returns>A task that represents the work queued to execute.</returns>
         /// <remarks>This middleware loads the state object on the leading edge of the middleware pipeline
-        /// and persists the state object on the trailing edge. Note this is different than BotStateSet,
+        /// and persists the state object on the trailing edge. Note this is different from <see cref="BotStateSet"/>,
         /// which does not pre-load the set on entry into the pipeline.
         /// </remarks>
         public async Task OnTurnAsync(ITurnContext context, NextDelegate next, CancellationToken cancellationToken = default(CancellationToken))
@@ -78,11 +84,12 @@ namespace Microsoft.Bot.Builder
         }
 
         /// <summary>
-        /// Reads in and caches the current state object in the TurnContext
+        /// Reads in and caches the current state object in the TurnContext.
         /// </summary>
         /// <param name="context">The context object for this turn.</param>
-        /// <param name="force">(optional) if true the cache will be bypassed </param>
-        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="force"><c>True</c> to bypass the cache; otherwise, <c>false</c>. Default is <c>true</c>.</param>
+        /// <param name="cancellationToken">A cancellation token that can be used by other objects
+        /// or threads to receive notice of cancellation.</param>
         /// <returns>A task that represents the work queued to execute.</returns>
         /// <remarks>If successful, the task result contains the state object, read from storage.</remarks>
         public async Task LoadAsync(ITurnContext context, bool force = false, CancellationToken cancellationToken = default(CancellationToken))

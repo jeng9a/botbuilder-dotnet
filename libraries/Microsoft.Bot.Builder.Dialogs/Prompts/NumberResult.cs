@@ -6,7 +6,7 @@ namespace Microsoft.Bot.Builder.Dialogs
     /// <summary>
     /// Represents recognition result for the NumberPrompt.
     /// </summary>
-    /// <typeparam name="T">The type of the <see cref="NumberResult{T}"/>.<//typeparam>
+    /// <typeparam name="T">The type of the <see cref="NumberResult{T}"/>.</typeparam>
     public class NumberResult<T> : PromptResult
     {
         /// <summary>
