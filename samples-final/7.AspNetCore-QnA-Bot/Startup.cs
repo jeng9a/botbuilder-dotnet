@@ -63,7 +63,7 @@ namespace AspNetCore_QnA_Bot
                 options.Middleware.Add(new ConversationState<ClaimStateModel>(inMemoryDataStore));
             });
 
-            services.AddBot<RichCardsBot>(options =>
+            /*services.AddBot<RichCardsBot>(options =>
             {
                 options.CredentialProvider = new ConfigurationCredentialProvider(Configuration);
 
@@ -96,7 +96,7 @@ namespace AspNetCore_QnA_Bot
                 // IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureBlobStorage("AzureBlobConnectionString", "containerName");
 
                 options.Middleware.Add(new ConversationState<Dictionary<string, object>>(dataStore));
-            });
+            });*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
