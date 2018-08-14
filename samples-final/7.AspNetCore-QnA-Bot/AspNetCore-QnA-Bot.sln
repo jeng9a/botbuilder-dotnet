@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2047
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore-QnA-Bot", "AspNetCore-QnA-Bot.csproj", "{5A63C02B-E83F-4E24-9E6F-C20F477EF0B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A63C02B-E83F-4E24-9E6F-C20F477EF0B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A63C02B-E83F-4E24-9E6F-C20F477EF0B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A63C02B-E83F-4E24-9E6F-C20F477EF0B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A63C02B-E83F-4E24-9E6F-C20F477EF0B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6A4450CF-16C9-4A32-853B-914B25D5E682}
+	EndGlobalSection
+EndGlobal
