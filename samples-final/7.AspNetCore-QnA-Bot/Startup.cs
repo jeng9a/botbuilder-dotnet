@@ -13,6 +13,8 @@ using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using AspNetCore_RichCards_Bot;
+using AspNetCore_QnA_Bot.ClaimBot;
+using AspNetCore_QnA_Bot.ClaimBot.Model;
 
 namespace AspNetCore_QnA_Bot
 {
@@ -24,6 +26,7 @@ namespace AspNetCore_QnA_Bot
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
+                .AddInMemoryCollection()
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
@@ -36,7 +39,7 @@ namespace AspNetCore_QnA_Bot
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBot<QnABot>(options =>
+            services.AddBot<AAAClaimBot>(options =>
             {
                 options.CredentialProvider = new ConfigurationCredentialProvider(Configuration);
 
@@ -51,13 +54,16 @@ namespace AspNetCore_QnA_Bot
                     await context.SendActivity("Sorry, it looks like something went wrong!");
                 }));
 
+                IStorage inMemoryDataStore = new MemoryStorage();
+
                 var qnaEndpoint = GetQnAMakerEndpoint(Configuration);
                 var qnaMiddleware = new QnAMakerMiddleware(qnaEndpoint);
 
                 options.Middleware.Add(qnaMiddleware);
+                options.Middleware.Add(new ConversationState<ClaimStateModel>(inMemoryDataStore));
             });
 
-            services.AddBot<RichCardsBot>(options =>
+            /*services.AddBot<RichCardsBot>(options =>
             {
                 options.CredentialProvider = new ConfigurationCredentialProvider(Configuration);
 
@@ -90,7 +96,7 @@ namespace AspNetCore_QnA_Bot
                 // IStorage dataStore = new Microsoft.Bot.Builder.Azure.AzureBlobStorage("AzureBlobConnectionString", "containerName");
 
                 options.Middleware.Add(new ConversationState<Dictionary<string, object>>(dataStore));
-            });
+            });*/
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
