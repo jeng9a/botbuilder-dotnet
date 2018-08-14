@@ -1,14 +1,15 @@
 {
     "name": "AspNetCore-QnA-Bot",
+    "description": "",
     "secretKey": "",
     "services": [
         {
-            "type": "endpoint",
-            "name": "AspNetCore-QnA-Bot",
-            "id": "http://localhost:5000/api/messages",
             "appId": "",
+            "id": "21fb4680-a000-11e8-920f-a56226bcd886",
+            "type": "endpoint",
             "appPassword": "",
-            "endpoint": "http://localhost:5000/api/messages"
+            "endpoint": "http://aaa-claims-bot.azurewebsites.net/api/messages",
+            "name": "claimbot"
         }
     ]
 }
